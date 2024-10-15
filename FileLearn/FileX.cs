@@ -7,7 +7,7 @@ using System.Threading;
 using System.IO;
 
 
-namespace FileLearn//最重要的是using方法，因为如果不能及时清理缓冲区，而去执行下一个IO方法就会因为线程冲突导致程序异常，而勤加清理线程缓冲区则不会出现什么问题；总结：多用using（IO操作）
+namespace FileLearn//【No.1】 最重要的是using方法，因为如果不能及时清理缓冲区，而去执行下一个IO方法就会因为线程冲突导致程序异常，而勤加清理线程缓冲区则不会出现什么问题；总结：多用using（IO操作）
 {
     class FileX
     {
@@ -16,7 +16,7 @@ namespace FileLearn//最重要的是using方法，因为如果不能及时清理
             //文件路径中的目录一定要存在，否则会报异常
            
             File.AppendAllLines("D://logs/log.txt", new List<string> { "第一行：今天学习的是文件写入类。" + DateTime.Now.ToString("D") ,"第二行：今天学的是写入类下的写入操作"});
-            //如果发现写入的内容出现乱码，就需要用到字符编码
+            //如果发现写入的内容出现乱码，就需要用到字符编码（Encoding.UTF8）
             File.AppendAllLines("D://logs/log2.txt", new List<string> { "第一行：今天学习的是文件写入类。" + DateTime.Now, "第二行：今天学的是写入类下的写入操作" }, Encoding.UTF8);
             //如果不需要换行就需要AppendAllText，当然使用\r\n也可以进行换行
             File.AppendAllText("D://logs/log2.txt", "AppendAllText" + DateTime.Now);
@@ -26,10 +26,10 @@ namespace FileLearn//最重要的是using方法，因为如果不能及时清理
         {
            
             //此方法适用于所有的文件流写入工作。
-            using (var _streamWriter = File.AppendText("D://logs/log.txt")) //方法原理是首先创建一个streamWriter流，然后再根据路径获取指定文件，再将这个文件写入到streamWriter（文件流）中，用完后要关闭
+            using (var _streamWriter = File.AppendText("D://logs/log.txt")) //方法原理是首先创建一个streamWriter流，然后再根据路径获取指定文件，再将这个文件写入到streamWriter（文件流）中，用完后要关闭！(见【No.1】)
             {
                 _streamWriter.WriteLine("我是通过streamWriter对象写入的");
-                _streamWriter.Flush();//刷新缓冲区,必须在写入完后加入这个方法
+                _streamWriter.Flush();//刷新缓冲区,必须在写入完后加入这个方法，缓冲区就是内存中专门存文件流的地方，它储存内容后只能进行手动刷新，否则缓冲区将一直存在上一条文件流。
                 
             }
 
